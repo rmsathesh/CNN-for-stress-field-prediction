@@ -19,5 +19,14 @@ A simple case of cantilever beam fixed at one end and a uniform force applied at
 
 Results showed good accuracy with FEA model. 
 
+![](images/result_1.PNG)
+
+![](images/result_2.PNG)
+
+![](images/result_3.PNG)
+
+![](images/result_4.PNG)
+
+
 
 
