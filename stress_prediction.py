@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Dec 13 16:16:54 2020
-
-@author: hp
-"""
-
 import numpy as np
 import os
 import sys
@@ -14,7 +7,7 @@ import matplotlib.pyplot as plt
 import time
 
 #%%
-floc= r'D:\study\ANN\CNN\projects\stress prediction\data-20201213T042155Z-001\data'
+floc= r'\..\stress prediction\data\data'
 fname = os.path.join(floc, 'all_data_s.npy')
 
 input_arr = np.array(np.load(fname)).astype(np.float32)
@@ -247,8 +240,8 @@ train(train_val, learning_rate=0.0001)
 
 
 #%%
-mpath_1 = r'D:\study\ANN\CNN\projects\stress prediction\model'
-rpath = r'D:\study\ANN\CNN\projects\stress prediction\result'
+mpath_1 = r'\..\stress prediction\model'
+rpath = r'\..\stress prediction\result'
 
 with tf.Graph().as_default():
     with tf.variable_scope('main'):
