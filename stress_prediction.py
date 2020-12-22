@@ -240,39 +240,45 @@ train(train_val, learning_rate=0.0001)
 
 
 #%%
-mpath_1 = r'\..\stress prediction\model'
-rpath = r'\..\stress prediction\result'
 
-with tf.Graph().as_default():
-    with tf.variable_scope('main'):
-        x = tf.placeholder(dtype=tf.float64, shape=[None, 24, 32, 5])
-        stress_act = tf.placeholder(dtype=tf.float64, shape=[None, 24, 32, 1])
-        stress_pred = model(x)
-        var_list = tf.trainable_variables()
-        test_loss = loss(stress_act, stress_pred)
-        saver = tf.train.Saver(var_list)
-        
-        with tf.Session() as sess:
-            ckpt = tf.train.get_checkpoint_state(mpath_1)
-            saver.restore(sess, ckpt.model_checkpoint_path)
+def evaluate(x_test, stress_test):
+    mpath_1 = r'D:\study\ANN\CNN\projects\stress prediction\model'
+    rpath = r'D:\study\ANN\CNN\projects\stress prediction\result'
+    
+    with tf.Graph().as_default():
+        with tf.variable_scope('main'):
+            x = tf.placeholder(dtype=tf.float64, shape=[None, 24, 32, 5])
+            stress_act = tf.placeholder(dtype=tf.float64, shape=[None, 24, 32, 1])
+            stress_pred = model(x)
+            var_list = tf.trainable_variables()
+            test_loss = loss(stress_act, stress_pred)
+            saver = tf.train.Saver(var_list)
             
-            tf.get_default_graph().as_graph_def()
-            total_loss = 0
-            for i in test_id:
-                x_b = x_test[i].reshape(-1, 24, 32, 5)
-                s_b = stress_test[i].reshape(-1, 24, 32, 1)
+            with tf.Session() as sess:
+                ckpt = tf.train.get_checkpoint_state(mpath_1)
+                saver.restore(sess, ckpt.model_checkpoint_path)
                 
-                pred, loss_val = sess.run([stress_pred, test_loss], feed_dict={x:x_b, stress_act:s_b})
-                total_loss += loss_val
-                
-                stress_plt = np.concatenate([s_b, pred, s_b-pred], axis=2)
-                plt.imshow(stress_plt[0,:,:,0], cmap='jet', interpolation='nearest')
-                plt.colorbar()
-                img_name = rpath + '/image_' + str(i)
-                plt.savefig(img_name)
-                plt.show()
-            print('MSE:', total_loss / len(test_id))
+                tf.get_default_graph().as_graph_def()
+                total_loss = 0
+                for i in x_test.shape[0]:
+                    x_b = x_test[i].reshape(-1, 24, 32, 5)
+                    s_b = stress_test[i].reshape(-1, 24, 32, 1)
+                    
+                    pred, loss_val = sess.run([stress_pred, test_loss], feed_dict={x:x_b, stress_act:s_b})
+                    total_loss += loss_val
+                    
+                    stress_plt = np.concatenate([s_b, pred, s_b-pred], axis=2)
+                    plt.imshow(stress_plt[0,:,:,0], cmap='jet', interpolation='nearest')
+                    plt.colorbar()
+                    img_name = rpath + '/image_' + str(i)
+                    plt.savefig(img_name)
+                    plt.show()
+                print('MSE:', total_loss / x_test.shape[0])
             
+
+#%%
+x_test, stress_test = test_val
+evaluate(x_test, stress_test)
 
 #%%
 
